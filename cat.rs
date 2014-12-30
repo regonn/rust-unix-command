@@ -9,16 +9,18 @@ fn main() {
     let mut stderr = stderr();
 
     if args.len() < 1 {
-        stderr.write_str("{}: file name not given\n");
+        stderr.write_str("file name not given\n");
     }
     for path in args.iter() {
         do_cat(path);
     }
 }
 
+const BUFFER_SIZE: uint = 2048;
+
 fn do_cat(path: &String) {
     let mut writer = stdout_raw();
-    let mut in_buf = [0, .. 1024];
+    let mut in_buf = [0, .. BUFFER_SIZE];
     let mut reader = File::open(&std::path::Path::new(path));
 
     loop {
