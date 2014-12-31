@@ -4,14 +4,13 @@ use std::io::{File, IoResult, IoError, EndOfFile};
 use std::io::stdio::{stdout_raw, stderr};
 
 fn main() {
-    let mut args = os::args();
-    args.remove(0);
+    let paths = os::args().slice_from_or_fail(&1).to_vec();
     let mut stderr = stderr();
 
-    if args.len() < 1 {
+    if paths.len() < 1 {
         stderr.write_str("file name not given\n");
     }
-    for path in args.iter() {
+    for path in paths.iter() {
         do_cat(path).ok().expect(path.as_slice());
     }
 }
