@@ -11,7 +11,10 @@ fn main() {
         stderr.write_str("file name not given\n");
     }
     for path in paths.iter() {
-        do_cat(path).ok().expect(path.as_slice());
+        let res = do_cat(path);
+        if res.is_err() {
+            panic!("{}: {}", path, res.unwrap_err());
+        }
     }
 }
 
