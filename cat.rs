@@ -25,7 +25,7 @@ fn do_cat(path: &str) {
     loop {
         let n = reader.read(&mut buf).unwrap();
         if n == 0 { break; }
-        writer.write_all(&buf).unwrap();
+        writer.write_all(&buf[..n]).unwrap();
     }
 }
 
