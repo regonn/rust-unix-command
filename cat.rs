@@ -1,37 +1,30 @@
-#![allow(unused_must_use)]
-use std::os;
-use std::io::{File, IoResult, IoError, EndOfFile};
-use std::io::stdio::{stdout_raw, stderr};
+use std::fs::File;
+use std::io::{BufReader, Read, Write};
+use std::io::stdout;
+use std::env::args;
+
+const BUFFER_SIZE: usize = 2048;
 
 fn main() {
-    let paths = os::args().slice_from_or_fail(&1).to_vec();
-    let mut stderr = stderr();
-
-    if paths.len() < 1 {
-        stderr.write_str("file name not given\n");
+    let paths: Vec<String> = args().skip(1).collect();
+    if paths.is_empty() {
+        panic!("file name not given");
     }
-    for path in paths.iter() {
-        let res = do_cat(path);
-        if res.is_err() {
-            panic!("{}: {}", path, res.unwrap_err());
-        }
+
+    let mut writer = stdout();
+    for path in paths {
+        do_cat(&mut writer, &path);
     }
 }
 
-const BUFFER_SIZE: uint = 2048;
-
-fn do_cat(path: &String) -> IoResult<()> {
-    let mut writer = stdout_raw();
-    let mut in_buf = [0, .. BUFFER_SIZE];
-    let mut reader = File::open(&std::path::Path::new(path));
-
+fn do_cat(writer: &mut Write, path: &str) {
+    let file = File::open(path).unwrap();
+    let mut reader = BufReader::new(&file);
+    let mut buf = [0; BUFFER_SIZE];
     loop {
-        let n = match reader.read(&mut in_buf) {
-            Ok(n) if n == 0 => return Ok(()),
-            Ok(n) => n,
-            Err(IoError{ kind: EndOfFile, ..}) => return Ok(()),
-            Err(e) => return Err(e)
-        };
-        try!(writer.write(in_buf.slice_to(n)));
+        let n = reader.read(&mut buf).unwrap();
+        if n == 0 { break; }
+        writer.write_all(&buf[..n]).unwrap();
     }
 }
+
