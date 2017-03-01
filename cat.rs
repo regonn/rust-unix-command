@@ -1,7 +1,6 @@
 #![allow(unused_must_use)]
 use std::env;
-use std::io::Result;
-use std::io::{self, Write, Read};
+use std::io::{self, Write, Read, Result};
 use std::fs::File;
 
 fn main() {
