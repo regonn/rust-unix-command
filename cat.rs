@@ -1,12 +1,12 @@
 #![allow(unused_must_use)]
 use std::env;
-use std::io::{stdout, Write, Read, Result};
+use std::io::{stdout, stderr, Write, Read, Result};
 use std::fs::File;
 
 fn main() {
     let paths = env::args().skip(1);
     if paths.len() < 1 {
-        writeln!(&mut std::io::stderr(), "file name not given\n");
+        writeln!(&mut stderr(), "file name not given\n");
     }
     for path in paths {
         let res = do_cat(path);
