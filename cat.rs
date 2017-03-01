@@ -1,6 +1,6 @@
 #![allow(unused_must_use)]
 use std::env;
-use std::io::{self, Write, Read, Result};
+use std::io::{stdout, Write, Read, Result};
 use std::fs::File;
 
 fn main() {
@@ -19,7 +19,7 @@ fn main() {
 const BUFFER_SIZE: usize = 2048;
 
 fn do_cat(path: String) -> Result<()> {
-    let stdout = io::stdout();
+    let stdout = stdout();
     let mut handle = stdout.lock();
     let mut in_buf = [0; BUFFER_SIZE];
     let mut reader = try!(File::open(&std::path::Path::new(&path)));
